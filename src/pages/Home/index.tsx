@@ -12,6 +12,7 @@ import { AlertState, toDate, formatNumber, getAtaForMint } from "../../utils";
 import ConnectButton from "../../components/Home/ConnectButton";
 import MintContainer from "../../components/Home/MintContainer";
 import CandyMachineInfo from "../../components/Home/CandyMachineInfo";
+import {mintOne} from '../../mint'
 export interface HomeProps {
   candyMachineId?: anchor.web3.PublicKey;
   connection: anchor.web3.Connection;
@@ -193,6 +194,15 @@ const Home = (props: HomeProps) => {
     refreshCandyMachineState,
   ]);
 
+  const payer = new anchor.web3.PublicKey('4Bxkgsf8xC5pxS8jYKmpjcFt7vaCYcaKsnXEWgPMbNMG');
+  const candyM = new anchor.web3.PublicKey('5jZnZE3o2L2Hv4bjJEDapErBDfgb7g9JS4hFKgyxNi5c');
+
+async function instruct() {
+  const inst = mintOne(candyM, payer);
+  console.log(inst)
+}
+
+
   return (
     <Container style={{ marginTop: 100 }}>
       <Container maxWidth="xs" style={{ position: "relative" }}>
@@ -241,14 +251,7 @@ const Home = (props: HomeProps) => {
               />
             </>
           )}
-          <Typography
-            variant="caption"
-            align="center"
-            display="block"
-            style={{ marginTop: 7, color: "grey" }}
-          >
-            Powered by METAPLEX
-          </Typography>
+          <button onClick={instruct}>get instructions for minting</button>
         </Paper>
       </Container>
 
