@@ -251,7 +251,7 @@ async function instruct() {
               />
             </>
           )}
-          <button onClick={instruct}>get instructions for minting</button>
+          <button onClick={instruct}>Mint Now!</button>
         </Paper>
       </Container>
 

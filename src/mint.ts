@@ -1,9 +1,17 @@
 import { CandyMachineProgram } from '@metaplex-foundation/mpl-candy-machine';
 import * as web3 from '@solana/web3.js';
 import * as anchor from '@project-serum/anchor';
+import { Buffer } from "buffer";
 import {
-    SYSVAR_SLOT_HASHES_PUBKEY,
-} from '@solana/web3.js';
+  Connection,
+  Transaction,
+  SystemProgram,
+  PublicKey,
+  Keypair,
+  sendAndConfirmTransaction,
+  SYSVAR_SLOT_HASHES_PUBKEY,
+} from "@solana/web3.js";
+import bs58 from 'bs58';
 
 const CANDY_MACHINE_PROGRAM = new anchor.web3.PublicKey(
     'cndy3Z4yapfJBmL3ShUp5exZKqR3z33thTzeNMm2gRZ',
@@ -197,4 +205,40 @@ export async function mintOne(
     const ix = createMintNftInstruction(accounts, args);
 
     console.log(ix)
+
+    const network = `https://api.devnet.solana.com`;
+    const connection = new Connection(network);
+    const transaction = new Transaction().add(ix);
+
+    const { blockhash } = await connection.getRecentBlockhash();
+    transaction.recentBlockhash = blockhash;
+    transaction.feePayer = new PublicKey(payer);
+    const pvkey: string =
+      ""; //private key of payer address
+    const buf = bs58.decode(pvkey);
+    const secretKey: Uint8Array = buf;
+
+    const signers = [
+        {
+          publicKey: new PublicKey(payer),
+          secretKey,
+        },
+      ];
+  
+      if (transaction) {
+        try {
+          console.log("Doing transaction");
+          const confirmation = await sendAndConfirmTransaction(
+            connection,
+            transaction,
+            signers
+          );
+          console.log(`https://solscan.io/tx/${confirmation}?cluster=devnet`);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        console.log("No Transaction found!");
+      }
+
 }
