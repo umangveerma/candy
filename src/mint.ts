@@ -21,12 +21,61 @@ const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 );
 
+ const CANDY_MACHINE_PROGRAM_V2_ID = new PublicKey(
+    'cndy3Z4yapfJBmL3ShUp5exZKqR3z33thTzeNMm2gRZ',
+  );
 
 interface CandyMachineAccount {
     id: anchor.web3.PublicKey;
     program: anchor.Program;
     state: CandyMachineState;
 }
+
+ interface CandyMachine {
+    authority: anchor.web3.PublicKey;
+    wallet: anchor.web3.PublicKey;
+    tokenMint: null | anchor.web3.PublicKey;
+    itemsRedeemed: anchor.BN;
+    data: CandyMachineData;
+  }
+
+ interface CandyMachineData {
+    itemsAvailable: anchor.BN;
+    uuid: null | string;
+    symbol: string;
+    sellerFeeBasisPoints: number;
+    isMutable: boolean;
+    maxSupply: anchor.BN;
+    price: anchor.BN;
+    retainAuthority: boolean;
+    gatekeeper: null | {
+      expireOnUse: boolean;
+      gatekeeperNetwork: web3.PublicKey;
+    };
+    goLiveDate: null | anchor.BN;
+    endSettings: null | [number, anchor.BN];
+    whitelistMintSettings: null | {
+      mode: WhitelistMintMode;
+      mint: anchor.web3.PublicKey;
+      presale: boolean;
+      discountPrice: null | anchor.BN;
+    };
+    hiddenSettings: null | {
+      name: string;
+      uri: string;
+      hash: Uint8Array;
+    };
+    creators: {
+      address: PublicKey;
+      verified: boolean;
+      share: number;
+    }[];
+  }
+
+ interface WhitelistMintMode {
+    neverBurn: undefined | boolean;
+    burnEveryTime: undefined | boolean;
+  }
 
 interface CandyMachineState {
     authority: anchor.web3.PublicKey;
@@ -166,11 +215,60 @@ const getMetadata = async (
     )[0];
 };
 
+export function loadWalletKey(keypair: any): Keypair {
+    if (!keypair) {
+        throw new Error('Keypair is required!');
+    }
+    const loaded = Keypair.fromSecretKey(Uint8Array.from(keypair))
+    return loaded
+}
+
+export async function loadCandyProgramV2(
+    walletKeyPair: Keypair,
+    env: string,
+    customRpcUrl?: string,
+  ) {
+    if (customRpcUrl) console.log('USING CUSTOM URL', customRpcUrl);
+  
+    // @ts-ignore
+    const solConnection = new anchor.web3.Connection(
+      //@ts-ignore
+      customRpcUrl || getCluster(env),
+    );
+  
+    const walletWrapper = new anchor.Wallet(walletKeyPair);
+    const provider = new anchor.Provider(solConnection, walletWrapper, {
+      preflightCommitment: 'recent',
+    });
+    const idl = await anchor.Program.fetchIdl(
+      CANDY_MACHINE_PROGRAM_V2_ID,
+      provider,
+    );
+    if (!idl) return;
+    const program = new anchor.Program(
+      idl,
+      CANDY_MACHINE_PROGRAM_V2_ID,
+      provider,
+    );
+    console.log('program id from anchor', program.programId.toBase58());
+    return program;
+  }
+
+
+
 export async function mintOne(
     candyMachineId: anchor.web3.PublicKey,
     payer: anchor.web3.PublicKey,
+    env: string,
+    rpcurl: string,
+    keypairr: string,
 ) {
     const { createMintNftInstruction } = CandyMachineProgram.instructions;
+
+    const userKeyPair = loadWalletKey(keypairr);
+    const anchorProgram: any = await loadCandyProgramV2(userKeyPair, env, rpcurl);
+    const candyMachine: CandyMachine = await anchorProgram.account.candyMachine.fetch(candyMachineId);
+
 
     const mint = anchor.web3.Keypair.generate();
 
@@ -186,7 +284,7 @@ export async function mintOne(
         candyMachine: candyMachineId,
         candyMachineCreator,
         payer,
-        wallet: payer,  // need to pass 'candyMachine.state.treasury' here where this 'candyMachine' is the whole candyMachine account and not only id
+        wallet: candyMachine.wallet,  // need to pass 'candyMachine.state.treasury' here where this 'candyMachine' is the whole candyMachine account and not only id
         mint: mint.publicKey,
         metadata: metadataAddress,
         masterEdition,
@@ -213,9 +311,9 @@ export async function mintOne(
     const { blockhash } = await connection.getRecentBlockhash();
     transaction.recentBlockhash = blockhash;
     transaction.feePayer = new PublicKey(payer);
-    const pvkey: string =
-      ""; //private key of payer address
-    const buf = bs58.decode(pvkey);
+    const key: string =
+      keypairr; //private key of payer address
+    const buf = bs58.decode(key);
     const secretKey: Uint8Array = buf;
 
     const signers = [
