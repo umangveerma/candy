@@ -200,7 +200,7 @@ const Home = (props: HomeProps) => {
   const candyM = new anchor.web3.PublicKey('5jZnZE3o2L2Hv4bjJEDapErBDfgb7g9JS4hFKgyxNi5c');
   const env = 'devnet';
   const rpcUr = props.rpcHost;
-  const keypair = '2AmqcXAcB9P7ueDYAWRyDbeHu5bRSDpFi7DCeKm4L6D19ptMe9gg1hUgXJW1xCYzKhVJDQAx5PdeBQJkT3mStTuc'; //keypair here okay
+  const keypair = ''; //keypair here 
 
 async function instr() {
   const inst = mintV2(keypair, env, candyM, rpcUr);
