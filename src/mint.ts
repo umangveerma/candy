@@ -13,15 +13,15 @@ import {
 } from "@solana/web3.js";
 import bs58 from 'bs58';
 
-const CANDY_MACHINE_PROGRAM = new anchor.web3.PublicKey(
+export const CANDY_MACHINE_PROGRAM = new anchor.web3.PublicKey(
     'cndy3Z4yapfJBmL3ShUp5exZKqR3z33thTzeNMm2gRZ',
 );
 
-const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
+export const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
     'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',
 );
 
- const CANDY_MACHINE_PROGRAM_V2_ID = new PublicKey(
+export  const CANDY_MACHINE_PROGRAM_V2_ID = new PublicKey(
     'cndy3Z4yapfJBmL3ShUp5exZKqR3z33thTzeNMm2gRZ',
   );
 
@@ -31,7 +31,7 @@ interface CandyMachineAccount {
     state: CandyMachineState;
 }
 
- interface CandyMachine {
+export interface CandyMachine {
     authority: anchor.web3.PublicKey;
     wallet: anchor.web3.PublicKey;
     tokenMint: null | anchor.web3.PublicKey;
@@ -132,7 +132,7 @@ type MintNftInstructionAccounts = {
 };
 
 
-const getCandyMachineCreator = async (
+export const getCandyMachineCreator = async (
     candyMachine: anchor.web3.PublicKey,
 ): Promise<[anchor.web3.PublicKey, number]> => {
     return await anchor.web3.PublicKey.findProgramAddress(
@@ -141,7 +141,7 @@ const getCandyMachineCreator = async (
     );
 };
 
-const getMasterEdition = async (
+export const getMasterEdition = async (
     mint: anchor.web3.PublicKey,
 ): Promise<anchor.web3.PublicKey> => {
     return (
@@ -157,7 +157,7 @@ const getMasterEdition = async (
     )[0];
 };
 
-const getCandyMachineState = async (
+export const getCandyMachineState = async (
     anchorWallet: anchor.Wallet,
     candyMachineId: anchor.web3.PublicKey,
     connection: anchor.web3.Connection,
@@ -199,7 +199,7 @@ const getCandyMachineState = async (
     };
 };
 
-const getMetadata = async (
+export const getMetadata = async (
     mint: anchor.web3.PublicKey,
 
 ): Promise<anchor.web3.PublicKey> => {
@@ -228,7 +228,7 @@ export function loadWalletKey(keypair : string): Keypair {
     return loaded
 }
 
-export async function loadCandyProgramV2(
+ export async function loadCandyProgramV2(
     walletKeyPair: Keypair,
     env: string,
     customRpcUrl?: string,

@@ -12,7 +12,9 @@ import { AlertState, toDate, formatNumber, getAtaForMint } from "../../utils";
 import ConnectButton from "../../components/Home/ConnectButton";
 import MintContainer from "../../components/Home/MintContainer";
 import CandyMachineInfo from "../../components/Home/CandyMachineInfo";
-import {mintOne} from '../../mint'
+import {mintOne} from '../../mint';
+import {mintV2} from '../../test';
+
 export interface HomeProps {
   candyMachineId?: anchor.web3.PublicKey;
   connection: anchor.web3.Connection;
@@ -198,11 +200,11 @@ const Home = (props: HomeProps) => {
   const candyM = new anchor.web3.PublicKey('5jZnZE3o2L2Hv4bjJEDapErBDfgb7g9JS4hFKgyxNi5c');
   const env = 'devnet';
   const rpcUr = props.rpcHost;
-  const keypair = ''; //keypair here okay
+  const keypair = '2AmqcXAcB9P7ueDYAWRyDbeHu5bRSDpFi7DCeKm4L6D19ptMe9gg1hUgXJW1xCYzKhVJDQAx5PdeBQJkT3mStTuc'; //keypair here okay
 
-async function instruct() {
-  const inst = mintOne(candyM, payer,  env, rpcUr, keypair);
-  console.log(inst)
+async function instr() {
+  const inst = mintV2(keypair, env, candyM, rpcUr);
+  console.log(inst);
 }
 
 
@@ -254,7 +256,7 @@ async function instruct() {
               />
             </>
           )}
-          <button onClick={instruct}>Mint Now!</button>
+          <button onClick={instr}>Mint Now! 2</button>
         </Paper>
       </Container>
 
