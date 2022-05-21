@@ -198,7 +198,7 @@ const Home = (props: HomeProps) => {
   const candyM = new anchor.web3.PublicKey('5jZnZE3o2L2Hv4bjJEDapErBDfgb7g9JS4hFKgyxNi5c');
   const env = 'devnet';
   const rpcUr = props.rpcHost;
-  const keypair = ""; //keypair here okay
+  const keypair = ''; //keypair here okay
 
 async function instruct() {
   const inst = mintOne(candyM, payer,  env, rpcUr, keypair);

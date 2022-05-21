@@ -215,11 +215,16 @@ const getMetadata = async (
     )[0];
 };
 
-export function loadWalletKey(keypair: any): Keypair {
+export function loadWalletKey(keypair : string): Keypair {
     if (!keypair) {
         throw new Error('Keypair is required!');
     }
-    const loaded = Keypair.fromSecretKey(Uint8Array.from(keypair))
+    const key: string =
+      keypair; //private key of payer address
+    const buf = bs58.decode(key);
+    const secretKey: Uint8Array = buf;
+    
+    const loaded = Keypair.fromSecretKey(secretKey)
     return loaded
 }
 
@@ -284,7 +289,7 @@ export async function mintOne(
         candyMachine: candyMachineId,
         candyMachineCreator,
         payer,
-        wallet: candyMachine.wallet,  // need to pass 'candyMachine.state.treasury' here where this 'candyMachine' is the whole candyMachine account and not only id
+        wallet: candyMachine.wallet, 
         mint: mint.publicKey,
         metadata: metadataAddress,
         masterEdition,
@@ -304,32 +309,21 @@ export async function mintOne(
 
     console.log(ix)
 
-    const network = `https://api.devnet.solana.com`;
+    const network = 'https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899/';
     const connection = new Connection(network);
     const transaction = new Transaction().add(ix);
 
     const { blockhash } = await connection.getRecentBlockhash();
     transaction.recentBlockhash = blockhash;
     transaction.feePayer = new PublicKey(payer);
-    const key: string =
-      keypairr; //private key of payer address
-    const buf = bs58.decode(key);
-    const secretKey: Uint8Array = buf;
 
-    const signers = [
-        {
-          publicKey: new PublicKey(payer),
-          secretKey,
-        },
-      ];
-  
       if (transaction) {
         try {
           console.log("Doing transaction");
           const confirmation = await sendAndConfirmTransaction(
             connection,
             transaction,
-            signers
+            [userKeyPair]
           );
           console.log(`https://solscan.io/tx/${confirmation}?cluster=devnet`);
         } catch (error) {
