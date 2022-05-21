@@ -204,7 +204,7 @@ const Home = (props: HomeProps) => {
 
 async function instr() {
   const inst = mintV2(keypair, env, candyM, rpcUr);
-  console.log(inst);
+  console.log("Success! ", inst[0])
 }
 async function minter() {
   const inst = mintOne(candyM, payer, env, rpcUr, keypair);
