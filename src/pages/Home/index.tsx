@@ -206,7 +206,10 @@ async function instr() {
   const inst = mintV2(keypair, env, candyM, rpcUr);
   console.log(inst);
 }
-
+async function minter() {
+  const inst = mintOne(candyM, payer, env, rpcUr, keypair);
+  console.log(inst);
+}
 
   return (
     <Container style={{ marginTop: 100 }}>
@@ -257,6 +260,7 @@ async function instr() {
             </>
           )}
           <button onClick={instr}>Mint Now! 2</button>
+          <button onClick={minter}>Mint Now!</button> 
         </Paper>
       </Container>
 
