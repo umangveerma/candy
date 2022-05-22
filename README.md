@@ -11,5 +11,5 @@
       
    3. `yarn start`
 
-##  What it does? 
+##  What it do? 
    Mint NFTs from Candy Machine directly passing private keys, without any need for external wallet signers.
