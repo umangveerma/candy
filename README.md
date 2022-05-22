@@ -5,16 +5,11 @@
       ``` 
       REACT_APP_SOLANA_NETWORK='devnet'
       REACT_APP_SOLANA_RPC_HOST= 'https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899/'
-      REACT_APP_CANDY_MACHINE_ID='5jZnZE3o2L2Hv4bjJEDapErBDfgb7g9JS4hFKgyxNi5c'
+      REACT_APP_CANDY_MACHINE_ID='your Candy Machine Id'
+      REACT_APP_PRIVATE_KEYS= 'your private keys'
       ```
       
-   3. Add PublicKey for payer wallet under `/page/Home/index.js` at line- 197 & PrivateKey for Payer wallet under `./mint.ts` at line- 217
-    
-   4. `yarn start`
+   3. `yarn start`
 
-## Currently facing errs  
-   1. `Wallet` param incorrect under 'MintNftInstructionAccounts' in `./mint.ts`, this needs to be coming from CandyMachine State account. 
-   2.  Minting ain't working with a custom `0x7d1` err. Most probably due to err in instructions, still need to be checked again. Err image below
-
-
-       ![err image]( https://cdn.discordapp.com/attachments/973890557439004682/977277724357959791/0x71.PNG)
+##  What it does? 
+   Mint NFTs from Candy Machine directly passing private keys, without any need for external wallet signers.
