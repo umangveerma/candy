@@ -1,25 +1,23 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import * as anchor from "@project-serum/anchor";
-
 import { Container, Snackbar } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import Alert from "@material-ui/lab/Alert";
-
-import Typography from "@material-ui/core/Typography";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { CandyMachineAccount, getCandyMachineState } from "../../lib/candy-machine";
 import { AlertState, toDate, formatNumber, getAtaForMint } from "../../utils";
 import ConnectButton from "../../components/Home/ConnectButton";
+import DirectMint from  "../../components/Home/DirectMint"; 
 import MintContainer from "../../components/Home/MintContainer";
 import CandyMachineInfo from "../../components/Home/CandyMachineInfo";
-import {mintOne} from '../../mint';
-import {mintV2} from '../../test';
+import {mintV2} from '../../lib/mint';
 
 export interface HomeProps {
   candyMachineId?: anchor.web3.PublicKey;
   connection: anchor.web3.Connection;
   txTimeout: number;
   rpcHost: string;
+  keypair: string;
 }
 
 const Home = (props: HomeProps) => {
@@ -196,19 +194,10 @@ const Home = (props: HomeProps) => {
     refreshCandyMachineState,
   ]);
 
-  const payer = new anchor.web3.PublicKey('4Bxkgsf8xC5pxS8jYKmpjcFt7vaCYcaKsnXEWgPMbNMG');
-  const candyM = new anchor.web3.PublicKey('5jZnZE3o2L2Hv4bjJEDapErBDfgb7g9JS4hFKgyxNi5c');
-  const env = 'devnet';
-  const rpcUr = props.rpcHost;
-  const keypair = ''; //keypair here 
-
-async function instr() {
-  const inst = mintV2(keypair, env, candyM, rpcUr);
-  console.log("Success! ", inst[0])
-}
-async function minter() {
-  const inst = mintOne(candyM, payer, env, rpcUr, keypair);
-  console.log(inst);
+async function mintNow() {
+  const env = process.env.REACT_APP_SOLANA_NETWORK!;
+  const inst = mintV2(props.keypair, env, props.candyMachineId!, props.rpcHost);
+  console.log("Success! ", inst)
 }
 
   return (
@@ -259,8 +248,7 @@ async function minter() {
               />
             </>
           )}
-          <button onClick={instr}>Mint Now! 2</button>
-          <button onClick={minter}>Mint Now!</button> 
+          <DirectMint onClick={mintNow}>Mint Now</DirectMint>
         </Paper>
       </Container>
 

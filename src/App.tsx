@@ -24,8 +24,9 @@ const rpcHost = process.env.REACT_APP_SOLANA_RPC_HOST!;
 const connection = new anchor.web3.Connection(
   rpcHost ? rpcHost : anchor.web3.clusterApiUrl("devnet")
 );
-
+const keypair = process.env.REACT_APP_PRIVATE_KEYS!;
 const txTimeoutInMilliseconds = 30000;
+
 
 const App = () => {
   const wallets = useConnectWallet({ network });
@@ -41,6 +42,7 @@ const App = () => {
               connection={connection}
               txTimeout={txTimeoutInMilliseconds}
               rpcHost={rpcHost}
+              keypair={keypair}
             />
           </WalletDialogProvider>
         </WalletProvider>
