@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import * as anchor from "@project-serum/anchor";
-import { Container, Snackbar } from "@material-ui/core";
+import { Container, Snackbar, Typography } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import Alert from "@material-ui/lab/Alert";
 import { useWallet } from "@solana/wallet-adapter-react";
@@ -249,6 +249,7 @@ async function mintNow() {
             </>
           )}
           <DirectMint onClick={mintNow}>Mint Now</DirectMint>
+          <Typography color="textSecondary">'Mint Now' button lets you mint NFTs directly passing private keys under .env file</Typography>
         </Paper>
       </Container>
 
