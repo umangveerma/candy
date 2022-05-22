@@ -1,7 +1,7 @@
 ##  Deployment Instructions
    1. `yarn install` & `yarn build`
    
-   2. Add these under in `.env`
+   2. Add these under `.env`
       ``` 
       REACT_APP_SOLANA_NETWORK='devnet'
       REACT_APP_SOLANA_RPC_HOST= 'https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899/'
